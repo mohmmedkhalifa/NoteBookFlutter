@@ -6,8 +6,8 @@ workflows:
         name: iOS App
         environment:
             vars:
-                XCODE_WORKSPACE: "Mohammed"
-                XCODE_SCHEME: "My Scheme"
+                XCODE_WORKSPACE: "Runner.xcworkspace"
+                XCODE_SCHEME: "Runner"
             xcode: latest
             cocoapods: default
         scripts:
