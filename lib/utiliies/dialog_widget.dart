@@ -12,7 +12,7 @@ class MyDialog extends StatefulWidget {
 }
 
 class _MyDialogState extends State<MyDialog> {
-  int checkIndex = 0;
+  int checkIndex ;
   Color color = Colors.transparent;
   String imageUrl;
   Book book = Book();

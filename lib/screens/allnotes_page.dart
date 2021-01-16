@@ -22,44 +22,46 @@ class _AllNotesState extends State<AllNotes> {
         elevation: 0,
         backgroundColor: Colors.transparent,
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 12, top: 12),
-            child: Text(
-              'Notes',
-              style: TextStyle(fontSize: 34),
-            ),
-          ),
-          Consumer<NoteProvider>(
-            builder: (context, value, child) => Container(
-              width: double.infinity,
-              height: MediaQuery.of(context).size.height - 108,
-              child: ListView.builder(
-                scrollDirection: Axis.vertical,
-                itemCount: value.notes.length,
-                itemBuilder: (context, index) => NoteWidget(
-                  title: value.notes[index].noteTitle,
-                  color: value.notes[index].color,
-                  desc: value.notes[index].description,
-                  onDismissed: (direction) {
-                    value.deleteNote(value.notes[index].id);
-                  },
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => NoteDetails(
-                            note: value.notes[index],
-                          ),
-                        ));
-                  },
-                ),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 12, top: 12),
+              child: Text(
+                'Notes',
+                style: TextStyle(fontSize: 34),
               ),
             ),
-          )
-        ],
+            Consumer<NoteProvider>(
+              builder: (context, value, child) => Container(
+                width: double.infinity,
+                height: MediaQuery.of(context).size.height - 108,
+                child: ListView.builder(
+                  scrollDirection: Axis.vertical,
+                  itemCount: value.notes.length,
+                  itemBuilder: (context, index) => NoteWidget(
+                    title: value.notes[index].noteTitle,
+                    color: value.notes[index].color,
+                    desc: value.notes[index].description,
+                    onDismissed: (direction) {
+                      value.deleteNote(value.notes[index].id);
+                    },
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => NoteDetails(
+                              note: value.notes[index],
+                            ),
+                          ));
+                    },
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

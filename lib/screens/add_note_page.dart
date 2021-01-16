@@ -86,7 +86,6 @@ class _AddNoteState extends State<AddNote> {
                   onPressed: () {
                     note.bookId = widget.book.id;
                     note.color = colors[currentIndex].value;
-                    print(note.color);
                     context.read<NoteProvider>().insertIntoNoteTable(note);
                     Navigator.pop(context);
                   },

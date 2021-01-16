@@ -37,9 +37,9 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          EditWidget(),
+
           SizedBox(
-            height: 12,
+            height: 36,
           ),
           Padding(
             padding: const EdgeInsets.only(left: 12),

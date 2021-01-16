@@ -3,22 +3,34 @@ import 'package:flutter/services.dart';
 import 'package:note_book/helpers/db_helper.dart';
 import 'package:note_book/providers/book_provider.dart';
 import 'package:note_book/providers/note_provider.dart';
+import 'package:note_book/utiliies/Splash.dart';
 import 'package:note_book/utiliies/on_boarding.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  var s =await DBHelper.dbHelper.initializeTasksDatabase();
+  var s = await DBHelper.dbHelper.initializeTasksDatabase();
   await DBHelper.dbHelper.connectToDatabase();
-print(s);
-  runApp(MyApp());
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  bool seen = prefs.getBool('seen');
+  Widget _screen;
+  if (seen == null || seen == false) {
+    _screen = OnBording();
+  } else {
+    _screen = Splash();
+  }
+  runApp(MyApp(_screen));
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     statusBarColor: Colors.black12,
   ));
 }
 
 class MyApp extends StatelessWidget {
+  Widget _screen;
+
+  MyApp(this._screen);
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -42,7 +54,7 @@ class MyApp extends StatelessWidget {
             ),
           ),
         ),
-        home: OnBording(),
+        home:this._screen,
       ),
     );
   }

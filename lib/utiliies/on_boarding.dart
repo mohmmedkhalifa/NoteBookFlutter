@@ -1,11 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:note_book/providers/book_provider.dart';
-import 'package:note_book/providers/note_provider.dart';
 import 'package:note_book/screens/home_page.dart';
 import 'package:page_view_indicator/page_view_indicator.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class OnBording extends StatefulWidget {
@@ -30,8 +27,6 @@ class _OnBordingState extends State<OnBording> {
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<BookProvider>(context, listen: false).getAllBook();
-    Provider.of<NoteProvider>(context, listen: false).getAllNote();
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
     ));
