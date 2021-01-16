@@ -1,10 +1,13 @@
 import 'package:dashed_container/dashed_container.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:note_book/models/book_model.dart';
 import 'package:note_book/providers/book_provider.dart';
 import 'package:note_book/providers/note_provider.dart';
+import 'package:note_book/screens/allbooks_page.dart';
 import 'package:note_book/screens/allnotes_page.dart';
+import 'package:note_book/screens/note_details_page.dart';
 import 'package:note_book/utiliies/dialog_widget.dart';
 import 'package:note_book/utiliies/edit_widget.dart';
 import 'package:note_book/utiliies/head_titles_widget.dart';
@@ -25,6 +28,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+    ));
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       resizeToAvoidBottomInset: false,
@@ -55,7 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => AllNotes(),
+                      builder: (context) => Allbooks(),
                     ),
                   );
                 },
@@ -147,6 +153,13 @@ class _MyHomePageState extends State<MyHomePage> {
           Column(
             children: [
               HeadTitleWidget(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AllNotes(),
+                      ));
+                },
                 leftTitle: 'Notes',
                 rightTitle: 'Show All',
               ),
@@ -164,6 +177,18 @@ class _MyHomePageState extends State<MyHomePage> {
                         return value.notes.length == null
                             ? Container()
                             : NoteWidget(
+                                onDismissed: (direction) {
+                                  value.deleteNote(value.notes[index].id);
+                                },
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => NoteDetails(
+                                          note: value.notes[index],
+                                        ),
+                                      ));
+                                },
                                 color: value.notes[index].color,
                                 desc: value.notes[index].description,
                                 title: value.notes[index].noteTitle,

@@ -45,7 +45,6 @@ class DBHelper {
         try {
           createBookTable(db);
           createNoteTable(db);
-
         } on Exception catch (e) {
           print(e);
         }
@@ -112,10 +111,20 @@ class DBHelper {
     }
   }
 
+  editeNote(Note note) async {
+    try {
+      int result = await database.update(noteTable, note.toMap(), where: '$noteTableId=?',whereArgs: [note.id]);
+      print('updated');
+    } on Exception catch (e) {
+      print(e);
+    }
+  }
+
   deleteAllNotes(int id) async {
     try {
       int result = await database
           .delete(noteTable, where: '$noteTableBookId=?', whereArgs: [id]);
+      print('done');
     } on Exception catch (e) {
       print(e);
     }

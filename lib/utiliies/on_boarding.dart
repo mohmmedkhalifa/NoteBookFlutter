@@ -1,95 +1,142 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:introduction_screen/introduction_screen.dart';
+import 'package:flutter/services.dart';
 import 'package:note_book/providers/book_provider.dart';
 import 'package:note_book/providers/note_provider.dart';
 import 'package:note_book/screens/home_page.dart';
+import 'package:page_view_indicator/page_view_indicator.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-import 'button_widget.dart';
-
-class OnBoarding extends StatefulWidget {
+class OnBording extends StatefulWidget {
   @override
-  _OnBoardingState createState() => _OnBoardingState();
+  _OnBordingState createState() => _OnBordingState();
 }
 
-class _OnBoardingState extends State<OnBoarding> {
-  final introKey = GlobalKey<IntroductionScreenState>();
+class _OnBordingState extends State<OnBording> {
+  List<PageModle> pages;
+  ValueNotifier<int> _pageViewNotifier = ValueNotifier(0);
 
-  void _onIntroEnd(context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => MyHomePage()),
+  void _addPage() {
+    pages = new List<PageModle>();
+
+    pages.add(
+      PageModle('assets/images/tutorial1.png'),
     );
-  }
-
-  Widget _buildImage(String assetName) {
-    return Align(
-      child: Image.asset(
-        'assets/images/$assetName.png',
-        width: double.infinity,
-        height: double.infinity,
-        fit: BoxFit.cover,
-      ),
+    pages.add(
+      PageModle('assets/images/tutorial2.png'),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-
     Provider.of<BookProvider>(context, listen: false).getAllBook();
     Provider.of<NoteProvider>(context, listen: false).getAllNote();
-
-    const bodyStyle = TextStyle(
-      fontSize: 18,
-      color: Colors.grey,
-    );
-    const titleStyle = TextStyle(
-      fontSize: 25,
-      color: Color(0xff7B1E58),
-    );
-    const pageDecoration = const PageDecoration(
-      titlePadding: EdgeInsets.only(top: 60.0),
-      titleTextStyle: titleStyle,
-      bodyTextStyle: bodyStyle,
-      descriptionPadding: EdgeInsets.only(top: 40.0),
-      pageColor: Colors.white,
-      imagePadding: EdgeInsets.zero,
-    );
-
-    return IntroductionScreen(
-      key: introKey,
-      pages: [
-        PageViewModel(
-          title: "Notebooks",
-          body: "Notebooks are the best place to manage your Notes ",
-          image: _buildImage('tutorial'),
-          decoration: pageDecoration,
-        ),
-        PageViewModel(
-          title: "Add Notes to Notebook",
-          body: "Simply create your note and add it to your favorite notebook",
-          image: _buildImage('tutorial2'),
-          decoration: pageDecoration,
-        ),
-      ],
-      onDone: () => _onIntroEnd(context),
-      //onSkip: () => _onIntroEnd(context), // You can override onSkip callback
-      showSkipButton: true,
-      skipFlex: 0,
-      nextFlex: 0,
-      skip: const Text('Skip'),
-      next: ButtonWidget(
-        title: 'Next',
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+    ));
+    _addPage();
+    return Scaffold(
+      body: Stack(
+        children: <Widget>[
+          PageView.builder(
+            itemBuilder: (context, index) {
+              return Stack(
+                children: <Widget>[
+                  Container(
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: ExactAssetImage(pages[index].image),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
+            itemCount: pages.length,
+            onPageChanged: (index) {
+              _pageViewNotifier.value = index;
+            },
+          ),
+          Transform.translate(
+            offset: Offset(0, 300),
+            child: Align(
+              alignment: Alignment.center,
+              child: _displayIndicator(pages.length),
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 24.0, left: 16, right: 16),
+              child: SizedBox(
+                width: double.infinity,
+                height: 48,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: RaisedButton(
+                    color: Theme.of(context).accentColor,
+                    child: Text(
+                      "Lets Start",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 24,
+                          letterSpacing: 1,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            _updateSeen();
+                            return MyHomePage();
+                          },
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
+    );
+  }
 
-      done: const Text('Done', style: TextStyle(fontWeight: FontWeight.w600)),
-      dotsDecorator: const DotsDecorator(
-        size: Size(10.0, 10.0),
-        color: Color(0xFFBDBDBD),
-        activeSize: Size(22.0, 10.0),
-        activeShape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(25.0)),
+  Widget _displayIndicator(int length) {
+    return PageViewIndicator(
+      pageIndexNotifier: _pageViewNotifier,
+      length: length,
+      normalBuilder: (animationController, index) => Circle(
+        size: 8.0,
+        color: Colors.grey,
+      ),
+      highlightedBuilder: (animationController, index) => ScaleTransition(
+        scale: CurvedAnimation(
+          parent: animationController,
+          curve: Curves.ease,
+        ),
+        child: Circle(
+          size: 12.0,
+          color: Colors.red,
         ),
       ),
     );
   }
+
+  void _updateSeen() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('seen', true);
+  }
+}
+
+class PageModle {
+  String _image;
+
+  PageModle(this._image);
+
+  String get image => _image;
 }

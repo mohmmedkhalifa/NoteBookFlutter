@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
+
 class EditWidget extends StatelessWidget {
-   EditWidget({
-    Key key,
-     this.onPressed
-  }) : super(key: key);
+  EditWidget({Key key, this.onPressed}) : super(key: key);
 
   Function onPressed;
 
@@ -20,10 +18,12 @@ class EditWidget extends StatelessWidget {
               color: Theme.of(context).accentColor,
               size: 24,
             ),
-            onPressed: onPressed,
+            onPressed: () {
+              Navigator.pop(context);
+            },
           ),
           Text(
-            'Edit',
+            '',
             style: Theme.of(context).textTheme.headline6,
           )
         ],

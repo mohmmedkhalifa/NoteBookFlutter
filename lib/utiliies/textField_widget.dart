@@ -20,7 +20,7 @@ class TextFieldWidget extends StatelessWidget {
         maxLines: maxLines,
         decoration: InputDecoration(
           labelText: labelText,
-          contentPadding: EdgeInsets.all(8),
+          contentPadding: EdgeInsets.all(16),
           border: OutlineInputBorder(
             borderSide: BorderSide(
                 color: Theme.of(context).accentColor,

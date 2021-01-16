@@ -13,7 +13,9 @@ void main() async {
   await DBHelper.dbHelper.connectToDatabase();
 print(s);
   runApp(MyApp());
-  SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    statusBarColor: Colors.black12,
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -40,7 +42,7 @@ class MyApp extends StatelessWidget {
             ),
           ),
         ),
-        home: OnBoarding(),
+        home: OnBording(),
       ),
     );
   }

@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:note_book/models/book_model.dart';
 import 'package:note_book/providers/note_provider.dart';
 import 'package:note_book/screens/add_note_page.dart';
+import 'package:note_book/screens/note_details_page.dart';
 import 'package:note_book/utiliies/edit_widget.dart';
 import 'package:note_book/utiliies/note_widget.dart';
 import 'package:provider/provider.dart';
@@ -19,6 +21,9 @@ class NotePage extends StatefulWidget {
 class _NotePageState extends State<NotePage> {
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+    ));
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       floatingActionButton: FloatingActionButton(
@@ -56,6 +61,18 @@ class _NotePageState extends State<NotePage> {
                     return value.notes.length != null
                         ? value.notes[index].bookId == widget.book.id
                             ? NoteWidget(
+                                onDismissed: (direction) {
+                                  value.deleteNote(value.notes[index].id);
+                                },
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => NoteDetails(
+                                          note: value.notes[index],
+                                        ),
+                                      ));
+                                },
                                 color: value.notes[index].color,
                                 desc: value.notes[index].description,
                                 title: value.notes[index].noteTitle,
